@@ -25,9 +25,18 @@ QDRANT_API_KEY = st.secrets["QDRANT_API_KEY"]
 # --- Set ENV untuk SDK OpenAI/LangChain auto-read tanpa argumen
 os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
-# --- Inisialisasi LLM & Embeddings (tanpa passing api key)
-llm = ChatOpenAI(model_name="gpt-4o-mini")
-embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+
+# --- Inisialisasi LLM & Embeddings (OPER API KEY eksplisit)
+llm = ChatOpenAI(
+    model="gpt-3.5-turbo",          
+    openai_api_key=OPENAI_API_KEY,  
+)
+
+embeddings = OpenAIEmbeddings(
+    model="text-embedding-3-small",
+    openai_api_key=OPENAI_API_KEY,  
+)
+
 
 # --- Hubungkan ke Qdrant (hasil ingest)
 collection_name = "imdb_movies"
