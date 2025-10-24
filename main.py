@@ -8,8 +8,8 @@ from langgraph.prebuilt import create_react_agent
 from langchain_core.messages import ToolMessage
 
 # ---------- UI basic ----------
-st.set_page_config(page_title="🎬 IMDB Movie Chatbot", page_icon="🎥")
-st.title("🎬 IMDB Movie Chatbot")
+st.set_page_config(page_title="🎬 Zidny IMDB Chat Bot", page_icon="🎥")
+st.title("🎬 Zidny IMDB Chat Bot")
 st.caption("Tanya apa saja soal IMDB Top 1000 (RAG + Qdrant + OpenAI)")
 
 # ---------- Secrets preflight ----------
@@ -20,14 +20,14 @@ if missing:
     st.stop()
 
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
-QDRANT_URL     = st.secrets["QDRANT_URL"]  
+QDRANT_URL     = st.secrets["QDRANT_URL"]          
 QDRANT_API_KEY = st.secrets["QDRANT_API_KEY"]
 
 if not isinstance(OPENAI_API_KEY, str) or not OPENAI_API_KEY.startswith("sk-"):
     st.error("OPENAI_API_KEY tidak valid. Pastikan mulai dengan 'sk-' dan tanpa spasi tersembunyi.")
     st.stop()
 
-# Matikan env project jika ada (menghindari error 'unexpected keyword argument project')
+# Matikan env project kalo ada  (hindari error 'unexpected keyword argument project')
 os.environ.pop("OPENAI_PROJECT", None)
 
 # ---------- Inisialisasi LLM & Embeddings ----------
@@ -53,8 +53,7 @@ except Exception as e:
     st.stop()
 
 # ---------- Qdrant Vector Store ----------
-collection_name = "imdb_movies"  # harus sama dengan yang dipakai di ingest_imdb.py
-
+collection_name = "imdb_movies"  #  sama dengan koleksi saat ingest_imdb.py
 try:
     qdrant = QdrantVectorStore.from_existing_collection(
         embedding=embeddings,
@@ -92,18 +91,18 @@ tools = [search_movie_info]
 # ---------- Agent ----------
 def imdb_agent(question: str, history: str):
     try:
-       agent = create_react_agent(
-    model=llm,
-    tools=tools,
-    state_modifier=(
-        "Kamu adalah asisten film yang ceria dan menguasai IMDB Top 1000.\n"
-        "Jawab berdasarkan informasi dari tool `search_movie_info`.\n"
-        "Sertakan judul, tahun, genre, rating, dan sutradara bila relevan.\n"
-        "Jika tidak yakin, katakan tidak tahu (jangan mengarang).\n"
-        "Gunakan bahasa Indonesia yang ringkas dan ramah.\n"
-    ),
-)
-
+        agent = create_react_agent(
+            model=llm,
+            tools=tools,
+            
+            state_modifier=(
+                "Kamu adalah asisten film bernama 'Zidny IMDB Chat Bot' yang menguasai IMDB Top 1000.\n"
+                "Jawab berdasarkan informasi dari tool `search_movie_info` (RAG).\n"
+                "Sertakan judul, tahun, genre, rating, dan sutradara bila relevan.\n"
+                "Jika tidak yakin, katakan tidak tahu (jangan mengarang).\n"
+                "Gunakan bahasa Indonesia yang ringkas dan ramah.\n"
+            ),
+        )
     except Exception as e:
         st.error("Gagal membuat agent.")
         st.exception(e)
@@ -171,3 +170,4 @@ if prompt:
         st.write(f"Input tokens: {res['total_input_tokens']}")
         st.write(f"Output tokens: {res['total_output_tokens']}")
         st.write(f"Estimated cost: Rp {res['price']:.4f}")
+
