@@ -92,17 +92,18 @@ tools = [search_movie_info]
 # ---------- Agent ----------
 def imdb_agent(question: str, history: str):
     try:
-        agent = create_react_agent(
-            model=llm,
-            tools=tools,
-            prompt=(
-                "Kamu adalah asisten film yang ceria dan menguasai IMDB Top 1000.\n"
-                "Jawab berdasarkan informasi dari tool `search_movie_info`.\n"
-                "Sertakan judul, tahun, genre, rating, dan sutradara bila relevan.\n"
-                "Jika tidak yakin, katakan tidak tahu (jangan mengarang).\n"
-                "Gunakan bahasa Indonesia yang ringkas dan ramah.\n"
-            ),
-        )
+       agent = create_react_agent(
+    model=llm,
+    tools=tools,
+    state_modifier=(
+        "Kamu adalah asisten film yang ceria dan menguasai IMDB Top 1000.\n"
+        "Jawab berdasarkan informasi dari tool `search_movie_info`.\n"
+        "Sertakan judul, tahun, genre, rating, dan sutradara bila relevan.\n"
+        "Jika tidak yakin, katakan tidak tahu (jangan mengarang).\n"
+        "Gunakan bahasa Indonesia yang ringkas dan ramah.\n"
+    ),
+)
+
     except Exception as e:
         st.error("Gagal membuat agent.")
         st.exception(e)
