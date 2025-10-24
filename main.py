@@ -1,10 +1,32 @@
-# main.py - IMDB Movie Chatbot
 import streamlit as st
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_qdrant import QdrantVectorStore
 from langchain.tools import tool
 from langgraph.prebuilt import create_react_agent
 from langchain_core.messages import ToolMessage
+
+# ---- Ambil secrets dan preflight
+REQUIRED = ["OPENAI_API_KEY", "QDRANT_URL", "QDRANT_API_KEY"]
+missing = [k for k in REQUIRED if not st.secrets.get(k)]
+if missing:
+    st.error(f"Missing secrets in Streamlit Cloud: {', '.join(missing)}")
+    st.stop()
+
+OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
+QDRANT_URL     = st.secrets["QDRANT_URL"]
+QDRANT_API_KEY = st.secrets["QDRANT_API_KEY"]
+
+# ---- Inisialisasi model dan embeddings
+llm = ChatOpenAI(
+    model="gpt-4o-mini",
+    openai_api_key=OPENAI_API_KEY,  # <—  openai_api_key
+)
+
+embeddings = OpenAIEmbeddings(
+    model="text-embedding-3-small",
+    openai_api_key=OPENAI_API_KEY,  # <—  openai_api_key
+)
+
 
 # Ambil API key dari Streamlit secrets
 QDRANT_URL = st.secrets["QDRANT_URL"]
@@ -53,9 +75,9 @@ def imdb_agent(question, history):
         model=llm,
         tools=tools,
         prompt=(
-            "You are a helpful movie assistant that knows about IMDB Top 1000 movies.\n"
+            "You are a helpful and cheerful movie assistant that knows about IMDB Top 1000 movies.\n"
             "Always answer based on movie information from the provided tool.\n"
-            "If unsure, say you don't know rather than making things up.\n"
+            "If unsure about the answer, say you don't know rather than making things up.\n"
             "Use clear and friendly language.\n"
         ),
     )
@@ -94,12 +116,12 @@ st.caption("Ask me anything about IMDB Top 1000 movies!")
 
 # Inisialisasi history
 if "messages" not in st.session_state:
-    st.session_state.messages = []
+     st.session_state.messages = []
 
 # Tampilkan history lama
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
+       st.markdown(msg["content"])
 
 # Input dari user
 if prompt := st.chat_input("Ask me about movies..."):
