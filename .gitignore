@@ -1,0 +1,8 @@
+# for Ignore virtual environment
+venv/
+__pycache__/
+*.pyc
+
+# for Ignore local configuration and secrets
+.env
+.streamlit/
