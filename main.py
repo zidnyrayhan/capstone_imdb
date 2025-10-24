@@ -26,7 +26,7 @@ QDRANT_API_KEY = st.secrets["QDRANT_API_KEY"]
 os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
 # --- Inisialisasi LLM & Embeddings (tanpa passing api key)
-llm = ChatOpenAI(model="gpt-4o-mini")
+llm = ChatOpenAI(model_name="gpt-4o-mini")
 embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
 
 # --- Hubungkan ke Qdrant (hasil ingest)
